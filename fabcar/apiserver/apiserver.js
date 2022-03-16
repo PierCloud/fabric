@@ -17,11 +17,11 @@ app.get('/api/queryallcars', async function (req, res) {
 
     // if (userAgent === undefined || origin === undefined)
     //     res.status(401).json({message: 'Unauthorized'});
-    let callMessage= "[CallCheck] query all cars called by: " + userAgent + "with origin :" + origin;
-    let callInfo={
-        message:callMessage,
-        userAgent:userAgent,
-        origin:origin
+    let callMessage = "[CallCheck] query all cars called by: " + userAgent + "with origin :" + origin;
+    let callInfo = {
+        message: callMessage,
+        userAgent: userAgent,
+        origin: origin
     }
     console.info(callInfo);
     if (req.query.apiKey === 'a632fe2b-fd69-4404-b960-beb0ca25fa40') {
@@ -111,6 +111,30 @@ app.get('/api/query/:car_index', async function (req, res) {
     }
 });
 
+app.get('/api/test', async function (req, res) {
+    if (req.query.apiKey == 'a632fe2b-fd69-4404-b960-beb0ca25fa40') {
+
+        try {
+            let result = "ok let's go";
+            console.log('ookkk')
+            res.status(200).json({response: result.toString()});
+        } catch (error) {
+            console.error(`Failed to evaluate transaction: ${error}`);
+            res.status(500).json(body={error: error});
+            process.exit(1);
+        }
+    } else {
+        res.status(401).json({message: 'Unauthorized'});
+    }
+});
+app.post('/api/testpost/', async function (req, res) {
+    console.log("chiamato con req ")
+    console.log(req.params)
+    console.log(req.query)
+    console.log("body")
+    console.log(req.body)
+    res.send('Transaction has been submitted');
+})
 
 app.post('/api/addcar/', async function (req, res) {
     if (req.body.apiKey == 'a632fe2b-fd69-4404-b960-beb0ca25fa40') {
@@ -158,6 +182,7 @@ app.post('/api/addcar/', async function (req, res) {
 
 
 app.put('/api/changeowner/:car_index', async function (req, res) {
+    let body;
     if (req.body.apiKey == 'a632fe2b-fd69-4404-b960-beb0ca25fa40') {
 
         try {
@@ -197,8 +222,8 @@ app.put('/api/changeowner/:car_index', async function (req, res) {
             process.exit(1);
         }
     } else {
-        res.status(401).json({message: 'Unauthorized'});
+        res.status(401).json( {message: 'Unauthorized'});
     }
 })
 
-app.listen(8080);
+app.listen(8080, "localhost");
