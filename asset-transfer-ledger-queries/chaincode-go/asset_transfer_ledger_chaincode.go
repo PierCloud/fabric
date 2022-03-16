@@ -99,7 +99,7 @@ type Asset struct {
 // HistoryQueryResult structure used for returning result of history query
 type HistoryQueryResult struct {
 	Record    *Asset    `json:"record"`
-	TxId     string    `json:"txId"`
+	TxId      string    `json:"txId"`
 	Timestamp time.Time `json:"timestamp"`
 	IsDelete  bool      `json:"isDelete"`
 }
@@ -284,7 +284,7 @@ func (t *SimpleChaincode) TransferAssetByColor(ctx contractapi.TransactionContex
 			if err != nil {
 				return err
 			}
-			err = ctx.GetStub().PutState(returnedAssetID, assetBytes)
+			err = ctx.GetStub().PutState(returnedAssetID, assetBytes) //exploitable
 			if err != nil {
 				return fmt.Errorf("transfer failed for asset %s: %v", returnedAssetID, err)
 			}
@@ -375,6 +375,74 @@ func getQueryResultForQueryStringWithPagination(ctx contractapi.TransactionConte
 		FetchedRecordsCount: responseMetadata.FetchedRecordsCount,
 		Bookmark:            responseMetadata.Bookmark,
 	}, nil
+}
+
+// ReadAsset retrieves an asset from the ledger
+func (t *SimpleChaincode) ReadAsset2(ctx contractapi.TransactionContextInterface, assetID string) (*Asset, error) {
+	assetBytes, err := ctx.GetStub().GetState(assetID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get asset %s: %v", assetID, err)
+	}
+	if assetBytes == nil {
+		return nil, fmt.Errorf("asset %s does not exist", assetID)
+	}
+
+	var asset Asset
+	err = json.Unmarshal(assetBytes, &asset)
+	if err != nil {
+		return nil, err
+	}
+
+	return &asset, nil
+}
+
+func (t *SimpleChaincode) ChangeColorByOwnerVulnerable(ctx contractapi.TransactionContextInterface, owner string, color string) error {
+	queryString := fmt.Sprintf(`{"selector":{"docType":"asset","owner":"%s"}}`, owner)
+	byteArray, err := getQueryResultForQueryString(ctx, queryString)
+	if err != nil {
+		return err
+	}
+
+	for _, asset := range byteArray {
+		asset.Color = color
+		assetBytes, err := json.Marshal(asset)
+		if err != nil {
+			return err
+		}
+
+		err = ctx.GetStub().PutState(asset.ID, assetBytes)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (t *SimpleChaincode) ChangeColorByOwnerFixed(ctx contractapi.TransactionContextInterface, owner string, color string) error {
+	queryString := fmt.Sprintf(`{"selector":{"docType":"asset","owner":"%s"}}`, owner)
+	byteArray, err := getQueryResultForQueryString(ctx, queryString)
+	if err != nil {
+		return err
+	}
+
+	for _, asset := range byteArray {
+		key := asset.ID
+		assetBytes, _ := ctx.GetStub().GetState(key) // safe key-based query
+		_ = json.Unmarshal(assetBytes, asset)
+		asset.Color = color
+		assetBytes, err := json.Marshal(asset)
+		if err != nil {
+			return err
+		}
+
+		err = ctx.GetStub().PutState(asset.ID, assetBytes)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // GetAssetHistory returns the chain of custody for an asset since issuance.
