@@ -26,7 +26,8 @@ app.get('/api/queryallcars', async function (req, res) {
     console.info(callInfo);
     if (req.query.apiKey === 'a632fe2b-fd69-4404-b960-beb0ca25fa40') {
         try {
-            const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
+            // const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
+            const ccpPath = path.resolve(__dirname, 'connection-org1.json');
             const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 // Create a new file system based wallet for managing identities.
             const walletPath = path.join(process.cwd(), 'wallet');
@@ -72,7 +73,9 @@ app.get('/api/query/:car_index', async function (req, res) {
     if (req.query.apiKey == 'a632fe2b-fd69-4404-b960-beb0ca25fa40') {
 
         try {
-            const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
+            // const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
+            const ccpPath = path.resolve(__dirname, 'connection-org1.json');
+
             const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 // Create a new file system based wallet for managing identities.
             const walletPath = path.join(process.cwd(), 'wallet');
@@ -140,7 +143,9 @@ app.post('/api/addcar/', async function (req, res) {
     if (req.body.apiKey == 'a632fe2b-fd69-4404-b960-beb0ca25fa40') {
 
         try {
-            const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
+            // const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
+            const ccpPath = path.resolve(__dirname, 'connection-org1.json');
+
             const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 // Create a new file system based wallet for managing identities.
             const walletPath = path.join(process.cwd(), 'wallet');
@@ -186,7 +191,9 @@ app.put('/api/changeowner/:car_index', async function (req, res) {
     if (req.body.apiKey == 'a632fe2b-fd69-4404-b960-beb0ca25fa40') {
 
         try {
-            const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
+            // const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
+            const ccpPath = path.resolve(__dirname, 'connection-org1.json');
+
             const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 // Create a new file system based wallet for managing identities.
             const walletPath = path.join(process.cwd(), 'wallet');
